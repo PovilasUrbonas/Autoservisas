@@ -1,0 +1,1 @@
+Autoserviso appsas sukurtas su Django karkasu

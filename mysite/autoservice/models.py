@@ -20,6 +20,11 @@ class Car(models.Model):
     vin_code = models.CharField(verbose_name="VIN Code", max_length=17, unique=True)
     client_name = models.CharField(verbose_name="Kliento Vardas", max_length=100)
 
+    def displpay_vin_code(self):
+        return self.vin_code
+
+    displpay_vin_code.short_description = "VIN Code"
+
     def __str__(self):
         return f"{self.make} {self.model} {self.license_plate} {self.vin_code} {self.client_name}"
 
@@ -35,6 +40,9 @@ class OrderLine(models.Model):
     service = models.ForeignKey(to="Service", on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Paslauga")
     quantity = models.PositiveIntegerField(verbose_name="Kiekis", default=1)
 
+    class Meta:
+        verbose_name = 'Service'
+        verbose_name_plural = 'Services'
+
     def __str__(self):
         return f"{self.order} x{self.quantity}"
-

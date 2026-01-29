@@ -14,6 +14,11 @@ class Car(models.Model):
     def __str__(self):
         return f"{self.make} {self.model} ({self.license_plate})"
 
+    def display_vin_code(self):
+        return self.vin_code
+
+    display_vin_code.short_description = "VIN Code"
+
     class Meta:
         verbose_name = "Car"
         verbose_name_plural = "Cars"

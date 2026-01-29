@@ -2,6 +2,22 @@ from django.db import models
 
 # Create your models here.
 
+class Car(models.Model):
+    make = models.CharField(verbose_name="Make", max_length=100)
+    model = models.CharField(verbose_name="Model", max_length=100)
+    license_plate = models.CharField(verbose_name="License Plate", max_length=10)
+    vin_code = models.CharField(verbose_name="VIN Code", max_length=20)
+    client_name = models.CharField(verbose_name="Client Name", max_length=500)
+    photo = models.ImageField('Photo', upload_to='car', null=True, blank=True)
+    description = HTMLField(verbose_name="Description", max_length=3000, default="")
+
+    def __str__(self):
+        return f"{self.make} {self.model} ({self.license_plate})"
+
+    class Meta:
+        verbose_name = "Car"
+        verbose_name_plural = "Cars"
+
 class Service(models.Model):
     name = models.CharField(max_length=100, verbose_name="Paslauga")
     price = models.DecimalField(verbose_name="Kaina", max_digits=10, decimal_places=2, default=0)
@@ -12,21 +28,6 @@ class Service(models.Model):
     class Meta:
         verbose_name = "Paslauga"
         verbose_name_plural = "Paslaugos"
-
-class Car(models.Model):
-    make = models.CharField(verbose_name="Markė", max_length=100)
-    model = models.CharField(verbose_name="Modelis", max_length=100)
-    license_plate = models.CharField(verbose_name="Valstybinis Numeris", max_length=20)
-    vin_code = models.CharField(verbose_name="VIN Code", max_length=17, unique=True)
-    client_name = models.CharField(verbose_name="Kliento Vardas", max_length=100)
-
-    def displpay_vin_code(self):
-        return self.vin_code
-
-    displpay_vin_code.short_description = "VIN Code"
-
-    def __str__(self):
-        return f"{self.make} {self.model} {self.license_plate} {self.vin_code} {self.client_name}"
 
 class Order(models.Model):
     date = models.DateField(auto_now_add=True, verbose_name="Data")

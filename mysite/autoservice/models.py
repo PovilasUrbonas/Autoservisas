@@ -8,8 +8,8 @@ class Car(models.Model):
     license_plate = models.CharField(verbose_name="License Plate", max_length=10)
     vin_code = models.CharField(verbose_name="VIN Code", max_length=20)
     client_name = models.CharField(verbose_name="Client Name", max_length=500)
-    photo = models.ImageField('Photo', upload_to='car', null=True, blank=True)
-    description = HTMLField(verbose_name="Description", max_length=3000, default="")
+    # photo = models.ImageField('Photo', upload_to='car', null=True, blank=True)
+    # description = HTMLField(verbose_name="Description", max_length=3000, default="")
 
     def __str__(self):
         return f"{self.make} {self.model} ({self.license_plate})"
@@ -19,31 +19,50 @@ class Car(models.Model):
         verbose_name_plural = "Cars"
 
 class Service(models.Model):
-    name = models.CharField(max_length=100, verbose_name="Paslauga")
-    price = models.DecimalField(verbose_name="Kaina", max_digits=10, decimal_places=2, default=0)
+    name = models.CharField(verbose_name="Service", max_length=100)
+    price = models.FloatField(verbose_name="Price")
 
     def __str__(self):
         return self.name
 
     class Meta:
-        verbose_name = "Paslauga"
-        verbose_name_plural = "Paslaugos"
+        verbose_name = "Service"
+        verbose_name_plural = "Services"
 
 class Order(models.Model):
-    date = models.DateField(auto_now_add=True, verbose_name="Data")
-    car = models.ForeignKey(to="Car", verbose_name="Automobilis", on_delete=models.SET_NULL, null=True, blank=True)
+    date = models.DateTimeField(verbose_name="Data", auto_now_add=True)
+    car = models.ForeignKey(to="Car", on_delete=models.SET_NULL, null=True, blank=True)
+    # users = models.ForeignKey(to="autoservice.CustomUser", verbose_name="User", on_delete=models.SET_NULL, null=True, blank=True)
+    # deadline = models.DateField(verbose_name="Deadline", null=True, blank=True)
+
+    ORDER_STATUS = (
+        ('p', 'Pending'),
+        ('i', 'In Progress'),
+        ('c', 'Completed'),
+        ('x', 'Cancelled'),
+    )
+
+    status = models.CharField(verbose_name="Status", max_length=1, choices=ORDER_STATUS, default='p')
 
     def __str__(self):
-        return f"{self.car} ({self.date})"
+        return f"Order {self.date}: {self.car}"
+
+    class Mete:
+        verbose_name = "Order"
+        verbose_name_plural = "Orders"
 
 class OrderLine(models.Model):
-    order = models.ForeignKey(to="Order", on_delete=models.CASCADE, verbose_name="Užsakymas")
-    service = models.ForeignKey(to="Service", on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Paslauga")
-    quantity = models.PositiveIntegerField(verbose_name="Kiekis", default=1)
+    order = models.ForeignKey(to="Order", on_delete=models.CASCADE, verbose_name="lines")
+    service = models.ForeignKey(to="Service", on_delete=models.SET_NULL, null=True, blank=True)
+    quantity = models.IntegerField(verbose_name="Quantity", default=1)
 
     class Meta:
         verbose_name = 'Service'
         verbose_name_plural = 'Services'
 
     def __str__(self):
-        return f"{self.order} x{self.quantity}"
+        return f"{self.service.name} - {self.quantity} ({self.order.car})"
+
+    class Meta:
+        verbose_name = 'Order Line'
+        verbose_name_plural = 'Order Lines'

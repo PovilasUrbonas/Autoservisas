@@ -14,4 +14,4 @@ class OrderLineAdmin(admin.ModelAdmin):
 admin.site.register(Car, CarAdmin)
 admin.site.register(Service)
 admin.site.register(Order)
-admin.site.register(OrderLine)
+admin.site.register(OrderLine, OrderLineAdmin)

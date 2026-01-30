@@ -11,6 +11,12 @@ class OrderLineAdmin(admin.ModelAdmin):
     ]
     readonly_fields = ['line_sum']
 
+class CarAdmin(admin.ModelAdmin):
+    list_display = ['make', 'model', 'license_plate', 'vin_code', 'client_name']
+    list_filter = ['client_name', 'make', 'model']
+    search_fields = ['license_plate', 'vin_code']
+
+
 admin.site.register(Car, CarAdmin)
 admin.site.register(Service)
 admin.site.register(Order)

@@ -8,15 +8,14 @@ class OrderLineInline(admin.TabularInline):
     model = OrderLine
     can_delete = False
     extra = 0
-    fields = ['service', 'quantity', 'vin_code']
-    readonly_fields = ['vin_code']
+    fields = ['service', 'quantity', 'line_sum']
+    readonly_fields = ['line_sum']
 
-    @admin.display(description="VIN code")
-    def vin_code(self, obj):
-        if not obj or not getattr(obj, 'order', None):
-            return ''
-        car = getattr(obj.order, 'car', None)
-        return getattr(car, 'vin_code', '') if car else ''
+    @admin.display(description="Line sum")
+    def line_sum(self, obj):
+        if not obj.service or obj.quantity is None:
+            return 0
+        return obj.quantity * obj.service.price
 
 class OrderAdmin(admin.ModelAdmin):
     list_display = ['car', 'date', 'status']
@@ -28,9 +27,12 @@ class OrderAdmin(admin.ModelAdmin):
     # readonly_fields = ['date', 'total']
 
 class CarAdmin(admin.ModelAdmin):
-    list_display = ['make', 'model', 'license_plate', 'vin_code']
+    list_display = ['make', 'model', 'client_name', 'license_plate', 'vin_code']
     list_filter = ['client_name', 'make', 'model']
     search_fields = ['license_plate', 'vin_code']
+
+class ServiceAdmin(admin.ModelAdmin):
+    list_display = ['name', 'price']
 
 class OrderLineAdmin(admin.ModelAdmin):
     list_display = ['order', 'service', 'quantity', 'line_sum']
@@ -46,6 +48,6 @@ class OrderLineAdmin(admin.ModelAdmin):
         return obj.quantity * obj.service.price
 
 admin.site.register(Car, CarAdmin)
-admin.site.register(Service)
+admin.site.register(Service, ServiceAdmin)
 admin.site.register(Order, OrderAdmin)
 admin.site.register(OrderLine, OrderLineAdmin)

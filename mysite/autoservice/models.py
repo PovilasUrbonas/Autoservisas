@@ -47,7 +47,11 @@ class Order(models.Model):
         ('x', 'Cancelled'),
     )
 
-    status = models.CharField(verbose_name="Status", max_length=1, choices=ORDER_STATUS, default='p')
+    status = models.CharField(
+        verbose_name="Status",
+        max_length=1,
+        choices=ORDER_STATUS,
+        default='p')
 
     def __str__(self):
         return f"Order {self.date}: {self.car}"

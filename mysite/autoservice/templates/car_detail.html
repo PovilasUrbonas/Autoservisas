@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>{{ car.make }} {{ car.model }}</h1>
+<ul>
+  <li><b>Savininkas:</b> {{ car.client_name }}</li>
+  <li><b>Valstybinis nr.:</b> {{ car.license_plate }}</li>
+  <li><b>VIN kodas:</b> {{ car.vin_code }}</li>
+</ul>
+<a href="{% url 'autoservice:car-list' %}">← Atgal į automobilius</a>
+{% endblock %}

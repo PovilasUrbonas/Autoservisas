@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Automobiliai</h1>
+
+<ul>
+  {% for car in cars %}
+    <li>
+      <a href="{% url 'autoservice:car-detail' car.id %}">
+        {{ car.make }} {{ car.model }} ({{ car.license_plate }})
+      </a>
+    </li>
+  {% empty %}
+    <li>Nėra registruotų automobilių</li>
+  {% endfor %}
+</ul>
+{% endblock %}

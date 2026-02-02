@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Užsakymas #{{ order.id }}</h1>
+<p><b>Automobilis:</b> {{ order.car }}</p>
+<p><b>Statusas:</b> {{ order.get_status_display }}</p>
+
+<h2>Užsakymo eilutės</h2>
+<table border="1" cellpadding="6">
+  <tr>
+    <th>Paslauga</th>
+    <th>Kiekis</th>
+    <th>Kaina</th>
+    <th>Suma</th>
+  </tr>
+  {% for line in lines %}
+  <tr>
+    <td>{{ line.service }}</td>
+    <td>{{ line.quantity }}</td>
+    <td>{% if line.service %}{{ line.service.price }}{% endif %}</td>
+    <td>{{ line.line_sum }}</td>
+  </tr>
+  {% endfor %}
+</table>
+
+<p><b>Bendra suma:</b> {{ order.total }}</p>
+<a href="{% url 'autoservice:order-list' %}">← Atgal</a>
+{% endblock %}

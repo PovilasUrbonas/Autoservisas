@@ -4,7 +4,7 @@ from .models import Service, Car, Order, OrderLine
 
 # Register your models here.
 
-class OrderLineInline(admin.TabularInline):
+class OrderLineInLine(admin.TabularInline):
     model = OrderLine
     can_delete = False
     extra = 0
@@ -18,13 +18,15 @@ class OrderLineInline(admin.TabularInline):
         return obj.quantity * obj.service.price
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ['car', 'date', 'status']
+    list_display = ['car', 'date', 'total']
     # list_editable = ['status', 'user', 'deadline']
-    inlines = [OrderLineInline]
-    # fieldsets = [
-    #     ("General", {'fields': ['car', 'date', 'status', 'user', 'deadline']}),
-    # ]
-    # readonly_fields = ['date', 'total']
+    inlines = [OrderLineInLine]
+    readonly_fields = ['date', 'total']
+
+    fieldsets = [
+        ("General", {'fields': ['car', 'date', 'status', 'total']}),
+    ]
+
 
 class CarAdmin(admin.ModelAdmin):
     list_display = ['make', 'model', 'client_name', 'license_plate', 'vin_code']

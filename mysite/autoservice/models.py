@@ -56,7 +56,11 @@ class Order(models.Model):
     def __str__(self):
         return f"Order {self.date}: {self.car}"
 
-    class Mete:
+    @property
+    def total(self):
+        return sum(line.line_sum for line in self.orderline_set.all())
+
+    class Meta:
         verbose_name = "Order"
         verbose_name_plural = "Orders"
 
@@ -65,12 +69,14 @@ class OrderLine(models.Model):
     service = models.ForeignKey(to="Service", on_delete=models.SET_NULL, null=True, blank=True)
     quantity = models.IntegerField(verbose_name="Quantity", default=1)
 
-    class Meta:
-        verbose_name = 'Service'
-        verbose_name_plural = 'Services'
-
     def __str__(self):
         return f"{self.service.name} - {self.quantity} ({self.order.car})"
+
+    @property
+    def line_sum(self):
+        price = self.service.price if self.service else 0
+        qty = self.quantity or 0
+        return qty * price
 
     class Meta:
         verbose_name = 'Order Line'

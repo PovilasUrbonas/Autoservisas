@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, DetailView
 from .models import Service, Order, Car, OrderLine
+from django.views import generic
 
 
 def index(request):
@@ -48,3 +49,13 @@ class OrderDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context["lines"] = self.object.lines.select_related("service")
         return context
+
+    # -------------------------
+    # C) Pagination
+    # -------------------------
+
+    class BookListView(generic.ListView):
+        model = Car
+        template_name = "car.html"
+        context_object_name = "cars"
+        paginate_by = 3

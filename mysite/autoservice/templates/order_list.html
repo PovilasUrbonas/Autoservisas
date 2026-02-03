@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block heading %}Užsakymai{% endblock %}
+
+{% block content %}
+<ul>
+  {% for order in orders %}
+    <li>
+      <a href="{% url 'autoservice:order-detail' order.id %}">
+        {{ order.date }} — {{ order.car }} — {{ order.get_status_display }}
+      </a>
+    </li>
+  {% empty %}
+    <li>Nėra užsakymų</li>
+  {% endfor %}
+</ul>
+{% endblock %}

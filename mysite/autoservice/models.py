@@ -58,25 +58,25 @@ class Order(models.Model):
 
     @property
     def total(self):
-        return sum(line.line_sum for line in self.orderline_set.all())
+        return sum(line.line_sum() for line in self.lines.all())
 
     class Meta:
         verbose_name = "Order"
         verbose_name_plural = "Orders"
 
+from django.db import models
+
 class OrderLine(models.Model):
-    order = models.ForeignKey(to="Order", on_delete=models.CASCADE, verbose_name="lines")
+    order = models.ForeignKey(to="Order", on_delete=models.CASCADE, related_name="lines", verbose_name="lines")
     service = models.ForeignKey(to="Service", on_delete=models.SET_NULL, null=True, blank=True)
     quantity = models.IntegerField(verbose_name="Quantity", default=1)
 
-    def __str__(self):
-        return f"{self.service.name} - {self.quantity} ({self.order.car})"
-
-    @property
     def line_sum(self):
-        price = self.service.price if self.service else 0
-        qty = self.quantity or 0
-        return qty * price
+        if self.service is None:
+            return 0
+        return self.quantity * self.service.price
+
+    line_sum.short_description = "Line sum"
 
     class Meta:
         verbose_name = 'Order Line'

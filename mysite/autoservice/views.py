@@ -1,7 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, DetailView
-
-from .models import Service, Order, OrderLine, Car
+from .models import Car, Order
 
 
 def index(request):
@@ -35,7 +34,7 @@ def car_detail(request, pk: int):
 # -------------------------
 class OrderListView(ListView):
     model = Order
-    template_name = "orders.html"
+    template_name = "orders_list.html"
     context_object_name = "orders"
     ordering = ["-date"]
 
@@ -47,9 +46,5 @@ class OrderDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["lines"] = (
-            OrderLine.objects.filter(order=self.object)
-            .select_related("service")
-            .order_by("id")
-        )
+        context["lines"] = self.object.lines.select_related("service")
         return context

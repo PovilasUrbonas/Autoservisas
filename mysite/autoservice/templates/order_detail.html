@@ -26,8 +26,8 @@
       <tr>
         <td>{{ line.service }}</td>
         <td>{{ line.quantity }}</td>
-        <td>{% if line.service %}{{ line.service.price }}{% else %}-{% endif %}</td>
-        <td>{{ line.line_sum }}</td>
+        <td>{% if line.service %}{{ line.service.price|floatformat:2 }} €{% else %}-{% endif %}</td>
+        <td>{{ line.line_sum|floatformat:2 }} €</td>
       </tr>
     {% empty %}
       <tr><td colspan="4">Nėra eilučių</td></tr>
@@ -36,7 +36,7 @@
 </table>
 
 <h4 class="text-right mt-3">
-    Bendra suma: {{ order.total }}
+    Bendra suma: {{ order.total|floatformat:2 }} €
 </h4>
 
 <a href="{% url 'autoservice:order-list' %}">← Atgal į užsakymus</a>

@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, DetailView
-from .models import Car, Order
+from .models import Service, Order, Car, OrderLine
 
 
 def index(request):
@@ -34,7 +34,7 @@ def car_detail(request, pk: int):
 # -------------------------
 class OrderListView(ListView):
     model = Order
-    template_name = "orders_list.html"
+    template_name = "order_list.html"
     context_object_name = "orders"
     ordering = ["-date"]
 

@@ -3,15 +3,17 @@
 {% block heading %}Užsakymai{% endblock %}
 
 {% block content %}
-<ul>
+<h2>Užsakymai</h2>
+
+<ul class="list-group">
   {% for order in orders %}
-    <li>
+    <li class="list-group-item">
       <a href="{% url 'autoservice:order-detail' order.id %}">
-        {{ order.date }} — {{ order.car }} — {{ order.get_status_display }}
+        Užsakymas #{{ order.id }} — {{ order.car }} — {{ order.date }} — {{ order.total|floatformat:2 }} €
       </a>
     </li>
   {% empty %}
-    <li>Nėra užsakymų</li>
+    <li class="list-group-item">Nėra užsakymų</li>
   {% endfor %}
 </ul>
 {% endblock %}

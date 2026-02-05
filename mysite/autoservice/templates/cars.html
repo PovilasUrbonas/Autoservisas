@@ -1,3 +1,5 @@
+{% load static %}
+
 {% extends "base.html" %}
 
 {% block heading %}Automobiliai{% endblock %}
@@ -17,8 +19,8 @@
     <a class="list-group-item list-group-item-action"
        href="{% url 'autoservice:car-detail' car.id %}">
       <div class="d-flex align-items-center gap-3">
-        {% if car.photo %}
-          <img src="{{ car.photo.url }}" alt="car photo" style="width:80px;height:60px;object-fit:cover;border-radius:8px;">
+        {% else car.photo %}
+          <img src="{{ car.photo.url }}" alt="car photo" style="width:80px;height:60px;object-fit:cover;border-radius:4px;">
         {% endif %}
         <div>
           <div><strong>{{ car.make }} {{ car.model }}</strong> ({{ car.license_plate }})</div>

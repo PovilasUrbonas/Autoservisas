@@ -8,7 +8,7 @@ class Car(models.Model):
     license_plate = models.CharField(verbose_name="License Plate", max_length=10)
     vin_code = models.CharField(verbose_name="VIN Code", max_length=20)
     client_name = models.CharField(verbose_name="Client Name", max_length=500)
-    # photo = models.ImageField('Photo', upload_to='car', null=True, blank=True)
+    photo = models.ImageField('Photo', upload_to='car', null=True, blank=True)
     # description = HTMLField(verbose_name="Description", max_length=3000, default="")
 
     def __str__(self):

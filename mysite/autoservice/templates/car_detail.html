@@ -1,11 +1,21 @@
 {% extends "base.html" %}
 
+{% block heading %}{{ car.make }} {{ car.model }}{% endblock %}
+
 {% block content %}
-<h1>{{ car.make }} {{ car.model }}</h1>
+
+{% if car.photo %}
+  <img src="{{ car.photo.url }}" alt="car photo"
+       style="max-width:400px;width:100%;height:auto;object-fit:cover;border-radius:12px;"
+       class="mb-3">
+{% endif %}
+
 <ul>
   <li><b>Savininkas:</b> {{ car.client_name }}</li>
   <li><b>Valstybinis nr.:</b> {{ car.license_plate }}</li>
   <li><b>VIN kodas:</b> {{ car.vin_code }}</li>
 </ul>
+
 <a href="{% url 'autoservice:car-list' %}">← Atgal į automobilius</a>
+
 {% endblock %}

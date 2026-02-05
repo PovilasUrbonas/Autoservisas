@@ -28,6 +28,7 @@ class OrderAdmin(admin.ModelAdmin):
     ]
 
 
+@admin.register(Car)
 class CarAdmin(admin.ModelAdmin):
     list_display = ['make', 'model', 'client_name', 'license_plate', 'vin_code']
     list_filter = ['client_name', 'make', 'model']
@@ -49,7 +50,6 @@ class OrderLineAdmin(admin.ModelAdmin):
             return 0
         return obj.quantity * obj.service.price
 
-admin.site.register(Car, CarAdmin)
 admin.site.register(Service, ServiceAdmin)
 admin.site.register(Order, OrderAdmin)
 admin.site.register(OrderLine, OrderLineAdmin)

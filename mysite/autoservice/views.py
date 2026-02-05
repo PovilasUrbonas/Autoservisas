@@ -1,7 +1,8 @@
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, DetailView
 from .models import Service, Order, Car, OrderLine
-from django.views import generic
+from django.core.paginator import Paginator
+from django.db.models import Q
 
 
 def index(request):
@@ -21,8 +22,28 @@ def index(request):
 # A) 2 funkcijos automobiliams
 # -------------------------
 def cars_list(request):
-    cars = Car.objects.all().order_by("make", "model", "license_plate")
-    return render(request, "cars.html", {"cars": cars})
+    q = request.GET.get("q", "").strip()
+
+    cars_qs = Car.objects.all().order_by("make", "model", "license_plate")
+
+    if q:
+        cars_qs = cars_qs.filter(
+            Q(client_name__icontains=q) |
+            Q(make__icontains=q) |
+            Q(model__icontains=q) |
+            Q(license_plate__icontains=q) |
+            Q(vin_code__icontains=q)
+        )
+
+    paginator = Paginator(cars_qs, 5)  # ← kiek automobilių puslapyje
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        "page_obj": page_obj,
+        "q": q,
+    }
+    return render(request, "cars.html", context)
 
 
 def car_detail(request, pk: int):
@@ -38,6 +59,7 @@ class OrderListView(ListView):
     template_name = "order_list.html"
     context_object_name = "orders"
     ordering = ["-date"]
+    paginate_by = 5
 
 
 class OrderDetailView(DetailView):
@@ -49,13 +71,3 @@ class OrderDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context["lines"] = self.object.lines.select_related("service")
         return context
-
-    # -------------------------
-    # C) Pagination
-    # -------------------------
-
-    class BookListView(generic.ListView):
-        model = Car
-        template_name = "car.html"
-        context_object_name = "cars"
-        paginate_by = 3

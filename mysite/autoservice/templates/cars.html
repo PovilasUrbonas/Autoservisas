@@ -1,19 +1,55 @@
 {% extends "base.html" %}
 
-{% block title%}Automobiliai{% endblock %}
+{% block heading %}Automobiliai{% endblock %}
 
 {% block content %}
-<h1>Automobiliai</h1>
 
-<ul>
-  {% for car in cars %}
-    <li>
-      <a href="{% url 'autoservice:car-detail' car.id %}">
-        {{ car.make }} {{ car.model }} ({{ car.license_plate }})
-      </a>
-    </li>
+<form method="get" class="mb-3">
+  <div class="input-group">
+    <input type="text" name="q" value="{{ q }}" class="form-control"
+           placeholder="Ieškoti pagal savininką, markę, modelį, numerį, VIN...">
+    <button class="btn btn-primary" type="submit">Ieškoti</button>
+  </div>
+</form>
+
+<div class="list-group">
+  {% for car in page_obj %}
+    <a class="list-group-item list-group-item-action"
+       href="{% url 'autoservice:car-detail' car.id %}">
+      <div class="d-flex align-items-center gap-3">
+        {% if car.photo %}
+          <img src="{{ car.photo.url }}" alt="car photo" style="width:80px;height:60px;object-fit:cover;border-radius:8px;">
+        {% endif %}
+        <div>
+          <div><strong>{{ car.make }} {{ car.model }}</strong> ({{ car.license_plate }})</div>
+          <div class="text-muted small">{{ car.client_name }} · VIN: {{ car.vin_code }}</div>
+        </div>
+      </div>
+    </a>
   {% empty %}
-    <li>Nėra registruotų automobilių</li>
+    <div class="alert alert-info">Nėra registruotų automobilių.</div>
   {% endfor %}
-</ul>
+</div>
+
+<!-- Pagination -->
+<nav class="mt-3">
+  <ul class="pagination">
+    {% if page_obj.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?q={{ q }}&page={{ page_obj.previous_page_number }}">«</a>
+      </li>
+    {% endif %}
+
+    <li class="page-item active">
+      <span class="page-link">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+    </li>
+
+    {% if page_obj.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="?q={{ q }}&page={{ page_obj.next_page_number }}">»</a>
+      </li>
+    {% endif %}
+  </ul>
+</nav>
+
 {% endblock %}

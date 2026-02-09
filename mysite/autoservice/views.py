@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, DetailView
 from .models import Service, Order, Car, OrderLine
 from django.core.paginator import Paginator
@@ -15,7 +15,7 @@ def index(request):
         "done_orders_count": Order.objects.filter(status="c").count(),
         "num_visits": num_visits,
     }
-    return render(request, "index.html", context)
+    return render(request, "index.html", context=context)
 
 
 # -------------------------

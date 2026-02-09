@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, DetailView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Service, Order, Car, OrderLine
 from django.core.paginator import Paginator
 from django.db.models import Q
@@ -70,3 +71,14 @@ class OrderDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context["lines"] = self.object.lines.select_related("service")
         return context
+
+
+class MyOrdersListView(LoginRequiredMixin, ListView):
+    """Prisijungusio vartotojo užsakymų sąrašas"""
+    model = Order
+    template_name = "my_orders.html"
+    context_object_name = "orders"
+    paginate_by = 5
+
+    def get_queryset(self):
+        return Order.objects.filter(user=self.request.user).order_by("-date")

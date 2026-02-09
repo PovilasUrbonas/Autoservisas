@@ -18,13 +18,13 @@ class OrderLineInLine(admin.TabularInline):
         return obj.quantity * obj.service.price
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ['car', 'date', 'total']
-    # list_editable = ['status', 'user', 'deadline']
+    list_display = ['car', 'date', 'user', 'due_back', 'status', 'total']
+    list_editable = ['status', 'user', 'due_back']
     inlines = [OrderLineInLine]
     readonly_fields = ['date', 'total']
 
     fieldsets = [
-        ("General", {'fields': ['car', 'date', 'status', 'total']}),
+        ("General", {'fields': ['car', 'date', 'user', 'due_back', 'status', 'total']}),
     ]
 
 

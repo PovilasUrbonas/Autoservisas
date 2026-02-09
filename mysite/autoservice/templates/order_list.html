@@ -7,9 +7,16 @@
 
 <ul class="list-group">
   {% for order in orders %}
-    <li class="list-group-item">
-      <a href="{% url 'autoservice:order-detail' order.id %}">
-        Užsakymas #{{ order.id }} — {{ order.car }} — {{ order.date }} — {{ order.total|floatformat:2 }} €
+    <li class="list-group-item {% if order.is_overdue %}list-group-item-danger{% endif %}">
+      <a href="{% url 'autoservice:order-detail' order.id %}" class="{% if order.is_overdue %}text-danger{% endif %}">
+        Užsakymas #{{ order.id }} — {{ order.car }} — {{ order.date }}
+        {% if order.due_back %}
+          — Terminas: {{ order.due_back }}
+        {% endif %}
+        — {{ order.total|floatformat:2 }} €
+        {% if order.is_overdue %}
+          <span class="badge badge-danger">Praėjęs terminas!</span>
+        {% endif %}
       </a>
     </li>
   {% empty %}
@@ -52,5 +59,3 @@
   </nav>
 {% endif %}
 {% endblock %}
-
-</nav>

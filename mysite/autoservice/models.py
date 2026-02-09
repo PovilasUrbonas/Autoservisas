@@ -1,4 +1,7 @@
 from django.db import models
+from django.contrib.auth.models import User
+from django.utils import timezone
+from tinymce.models import HTMLField
 
 # Create your models here.
 
@@ -9,7 +12,7 @@ class Car(models.Model):
     vin_code = models.CharField(verbose_name="VIN Code", max_length=20)
     client_name = models.CharField(verbose_name="Client Name", max_length=500)
     photo = models.ImageField('Photo', upload_to='car', null=True, blank=True)
-    # description = HTMLField(verbose_name="Description", max_length=3000, default="")
+    description = HTMLField(verbose_name="Description", max_length=3000, default="")
 
     def __str__(self):
         return f"{self.make} {self.model} ({self.license_plate})"
@@ -37,8 +40,8 @@ class Service(models.Model):
 class Order(models.Model):
     date = models.DateTimeField(verbose_name="Data", auto_now_add=True)
     car = models.ForeignKey(to="Car", on_delete=models.SET_NULL, null=True, blank=True)
-    # users = models.ForeignKey(to="autoservice.CustomUser", verbose_name="User", on_delete=models.SET_NULL, null=True, blank=True)
-    # deadline = models.DateField(verbose_name="Deadline", null=True, blank=True)
+    user = models.ForeignKey(to=User, verbose_name="Vartotojas", on_delete=models.SET_NULL, null=True, blank=True)
+    due_back = models.DateField(verbose_name="Grąžinimo terminas", null=True, blank=True)
 
     ORDER_STATUS = (
         ('p', 'Pending'),
@@ -60,11 +63,16 @@ class Order(models.Model):
     def total(self):
         return sum(line.line_sum() for line in self.lines.all())
 
+    @property
+    def is_overdue(self):
+        """Grąžina True, jei grąžinimo terminas praėjo"""
+        if self.due_back and timezone.now().date() > self.due_back:
+            return True
+        return False
+
     class Meta:
         verbose_name = "Order"
         verbose_name_plural = "Orders"
-
-from django.db import models
 
 class OrderLine(models.Model):
     order = models.ForeignKey(to="Order", on_delete=models.CASCADE, related_name="lines", verbose_name="lines")

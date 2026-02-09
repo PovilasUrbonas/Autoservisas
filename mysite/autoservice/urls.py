@@ -23,4 +23,7 @@ urlpatterns = [
     # uzsakymai (class-based)
     path("uzsakymai/", views.OrderListView.as_view(), name="order-list"),
     path("uzsakymai/<int:pk>/", views.OrderDetailView.as_view(), name="order-detail"),
+
+    # mano uzsakymai
+    path("manouzsakymai/", views.MyOrdersListView.as_view(), name="my-orders"),
 ]

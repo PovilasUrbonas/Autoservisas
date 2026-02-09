@@ -23,6 +23,17 @@
   <li><b>VIN kodas:</b> {{ car.vin_code }}</li>
 </ul>
 
-<a href="{% url 'autoservice:car-list' %}">← Atgal į automobilius</a>
+{% if car.description %}
+<div class="mt-4">
+  <h5>Aprašymas:</h5>
+  <div class="card">
+    <div class="card-body">
+      {{ car.description | safe }}
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<a href="{% url 'autoservice:car-list' %}" class="mt-3 d-inline-block">← Atgal į automobilius</a>
 
 {% endblock %}

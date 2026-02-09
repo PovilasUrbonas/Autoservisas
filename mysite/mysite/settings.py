@@ -133,9 +133,16 @@ STATICFILES_DIRS = [
 import os
 
 MEDIA_URL = "/media/"
-
 MEDIA_ROOT = os.path.join(BASE_DIR / "autoservice/media")
-
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'info@gigy.app'
+# el. pašto adresas iš kurio siųsite
+EMAIL_HOST_PASSWORD = 'zJe9CK_!)FG='
+# slaptažodis

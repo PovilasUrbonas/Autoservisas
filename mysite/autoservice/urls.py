@@ -26,4 +26,7 @@ urlpatterns = [
 
     # mano uzsakymai
     path("manouzsakymai/", views.MyOrdersListView.as_view(), name="my-orders"),
+
+    # prisijungimai
+    path('signup/', views.SignUpView.as_view(), name='signup'),
 ]

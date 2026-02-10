@@ -1,9 +1,11 @@
 from django.shortcuts import render, get_object_or_404
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Service, Order, Car, OrderLine
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.contrib.auth.forms import UserCreationForm
+from django.urls import reverse_lazy
 
 
 def index(request):
@@ -17,7 +19,6 @@ def index(request):
         "num_visits": num_visits,
     }
     return render(request, "index.html", context=context)
-
 
 # -------------------------
 # A) 2 funkcijos automobiliams
@@ -82,3 +83,9 @@ class MyOrdersListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return Order.objects.filter(user=self.request.user).order_by("-date")
+
+
+class SignUpView(CreateView):
+    form_class = UserCreationForm
+    template_name = "signup.html"
+    success_url = reverse_lazy("login")

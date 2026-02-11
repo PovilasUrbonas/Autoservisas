@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, reverse, get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Service, Order, Car, OrderLine
@@ -6,6 +6,8 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
+from .forms import OrderReviewForm
+from django.views.generic.edit import FormMixin
 
 
 def index(request):
@@ -67,12 +69,32 @@ class OrderDetailView(DetailView):
     model = Order
     template_name = "order_detail.html"
     context_object_name = "order"
+    form_class = OrderReviewForm
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["lines"] = self.object.lines.select_related("service")
         return context
 
+    # nurodome, kur atsidursime komentaro sėkmės atveju.
+    def get_success_url(self):
+        return reverse("order", kwargs={"pk": self.object.id})
+
+    # standartinis post metodo perrašymas, naudojant FormMixin, galite kopijuoti tiesiai į savo projektą.
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    # štai čia nurodome, kad knyga bus būtent ta, po kuria komentuojame, o vartotojas bus tas, kuris yra prisijungęs.
+    def form_valid(self, form):
+        form.instance.book = self.get_object()
+        form.instance.reviewer = self.request.user
+        form.save()
+        return super().form_valid(form)
 
 class MyOrdersListView(LoginRequiredMixin, ListView):
     """Prisijungusio vartotojo užsakymų sąrašas"""

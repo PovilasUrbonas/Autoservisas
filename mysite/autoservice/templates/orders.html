@@ -1,10 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
-</body>
-</html>
+<h2>Komentarai:</h2>
+<br/>
+{% if book.reviews.all %}
+{% for review in book.reviews.all %}
+<p><strong>{{ review.reviewer }}</strong>, <em>{{ review.date_created }}</em></p>
+<p>{{ review.content }}</p>
+<hr>
+{% endfor %}
+{% else %}
+<p>Komentarų nėra</p>
+{% endif %}

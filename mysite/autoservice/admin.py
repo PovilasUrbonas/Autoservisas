@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Service, Car, Order, OrderLine
+from .models import Service, Car, Order, OrderLine, OrderReview
 
 
 # Register your models here.
@@ -50,6 +50,10 @@ class OrderLineAdmin(admin.ModelAdmin):
             return 0
         return obj.quantity * obj.service.price
 
+class OrderReviewAdmin(admin.ModelAdmin):
+    list_display = ['order', 'date_created', 'reviewer', 'content']
+
 admin.site.register(Service, ServiceAdmin)
 admin.site.register(Order, OrderAdmin)
 admin.site.register(OrderLine, OrderLineAdmin)
+admin.site.register(OrderReview, OrderReviewAdmin)

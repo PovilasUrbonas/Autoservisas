@@ -39,14 +39,32 @@
     Bendra suma: {{ order.total|floatformat:2 }} €
 </h4>
 
+<hr>
+
+<h4>Atsiliepimai</h4>
+{% for review in reviews %}
+<div class="card mb-2">
+    <div class="card-body">
+        <p class="card-text">{{ review.content }}</p>
+        <small class="text-muted">
+            {{ review.reviewer }} | {{ review.date_created }}
+        </small>
+    </div>
+</div>
+{% empty %}
+<p class="text-muted">Kol kas nėra atsiliepimų.</p>
+{% endfor %}
+
 {% if user.is_authenticated %}
-<h2>Palikite atsiliepimą</h2>
-<form method="post" class="mb-2">
+<h5 class="mt-4">Palikite atsiliepimą</h5>
+<form method="post" class="mb-3">
     {% csrf_token %}
     {% load crispy_forms_tags %}
     {{ form | crispy }}
     <button type="submit" class="btn btn-primary">Paskelbti</button>
 </form>
+{% else %}
+<p class="text-muted mt-3"><a href="{% url 'login' %}">Prisijunkite</a>, kad galėtumėte palikti atsiliepimą.</p>
 {% endif %}
 
 <a href="{% url 'autoservice:order-list' %}">← Atgal į užsakymus</a>

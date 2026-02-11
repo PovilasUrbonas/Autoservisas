@@ -65,7 +65,7 @@ class OrderListView(ListView):
     paginate_by = 5
     ordering = ["-date"]  # naujausi užsakymai pirmi
 
-class OrderDetailView(DetailView):
+class OrderDetailView(FormMixin, DetailView):
     model = Order
     template_name = "order_detail.html"
     context_object_name = "order"
@@ -74,13 +74,14 @@ class OrderDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["lines"] = self.object.lines.select_related("service")
+        context["reviews"] = self.object.reviews.all()
         return context
 
     # nurodome, kur atsidursime komentaro sėkmės atveju.
     def get_success_url(self):
-        return reverse("order", kwargs={"pk": self.object.id})
+        return reverse("autoservice:order-detail", kwargs={"pk": self.object.id})
 
-    # standartinis post metodo perrašymas, naudojant FormMixin, galite kopijuoti tiesiai į savo projektą.
+    # standartinis post metodo perrašymas, naudojant FormMixin
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         form = self.get_form()
@@ -89,9 +90,9 @@ class OrderDetailView(DetailView):
         else:
             return self.form_invalid(form)
 
-    # štai čia nurodome, kad knyga bus būtent ta, po kuria komentuojame, o vartotojas bus tas, kuris yra prisijungęs.
+    # nurodome, kad užsakymas bus tas, po kuriuo komentuojame, o vartotojas bus tas, kuris yra prisijungęs.
     def form_valid(self, form):
-        form.instance.book = self.get_object()
+        form.instance.order = self.get_object()
         form.instance.reviewer = self.request.user
         form.save()
         return super().form_valid(form)

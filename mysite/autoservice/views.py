@@ -4,7 +4,7 @@ from .models import Service, Order, Car, OrderLine
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.urls import reverse_lazy
-from .forms import OrderReviewForm, CustomUserChangeForm, CustomUserCreationForm
+from .forms import OrderReviewForm, CustomUserChangeForm, CustomUserCreationForm, InstanceCreateUpdateForm
 from django.views.generic.edit import FormMixin
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -125,6 +125,16 @@ class OrderInstanceDetailView(LoginRequiredMixin, UserPassesTestMixin, generic.D
     model = OrderInstance
     context_object_name = "instance"
     template_name = "instance.html"
+
+    def test_func(self):
+        return self.request.user.is_staff
+
+class OrderInstanceCreateView(LoginRequiredMixin, UserPassesTestMixin, generic.CreateView):
+    model = OrderInstance
+    template_name = "instance_form.html"
+    form_class = InstanceCreateUpdateForm
+    # fields = ['car', 'user', 'due_back', 'status', 'order']
+    success_url = reverse_lazy('instances')
 
     def test_func(self):
         return self.request.user.is_staff

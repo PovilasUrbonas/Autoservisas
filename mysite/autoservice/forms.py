@@ -1,4 +1,4 @@
-from .models import OrderReview, CustomUser
+from .models import OrderReview, CustomUser, OrderInstance
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 
@@ -18,3 +18,8 @@ class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = CustomUser
         fields = ['username', 'email', 'password1', 'password2']
+
+class InstanceCreateUpdateForm(forms.ModelForm):
+    class Meta:
+        model = OrderInstance
+        fields = ['car', 'service', 'user', 'due_back', 'status']

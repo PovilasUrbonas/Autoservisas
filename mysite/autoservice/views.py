@@ -1,6 +1,5 @@
 from django.shortcuts import render, reverse, get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import Service, Order, Car, OrderLine
 from django.core.paginator import Paginator
 from django.db.models import Q
@@ -8,6 +7,7 @@ from django.urls import reverse_lazy
 from .forms import OrderReviewForm, CustomUserChangeForm, CustomUserCreationForm
 from django.views.generic.edit import FormMixin
 from django.views import generic
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 def index(request):
     num_visits = request.session.get("num_visits", 1)
@@ -121,3 +121,10 @@ class ProfileUpdateView(LoginRequiredMixin, generic.UpdateView):
     def get_object(self, queryset=None):
         return self.request.user
 
+class OrderInstanceDetailView(LoginRequiredMixin, UserPassesTestMixin, generic.DetailView):
+    model = OrderInstance
+    context_object_name = "instance"
+    template_name = "instance.html"
+
+    def test_func(self):
+        return self.request.user.is_staff

@@ -1,9 +1,11 @@
 {% extends "base.html" %}
-{% block title %}Knygų egzemplioriai{% endblock%}
+{% block title %}Paslaugos{% endblock%}
 {% block content %}
 {% for instance in instances %}
-<p>{{ instance.book }} - {{ instance.uuid }}
-    <span class="{% if instance.is_overdue %}text-danger{% endif %}">({{ instance.due_back }}, {{ instance.get_status_display }})</span>
-</p>
+<a href="{% url 'instance' instance.pk %}">
+    <p>{{ instance.order }} - {{ instance.uuid }}
+        <span class="{% if instance.is_overdue %}text-danger{% endif %}">({{ instance.due_back }}, {{ instance.get_status_display }})</span>
+    </p>
+</a>
 {% endfor%}
 {% endblock%}

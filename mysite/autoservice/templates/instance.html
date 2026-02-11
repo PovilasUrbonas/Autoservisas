@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Paslaugos{% endblock%}
+{% block content %}
+<h1>{{ instance.order.title }}</h1>
+<p>UUID: {{ instance.uuid }}</p>
+{% if instance.reader %}
+<p>Klientas:
+    {% if instance.reader.photo %}
+    <img class="rounded-circle" style="width: 30px" src="{{ instance.reader.photo.url }}">
+    {% endif %}
+    {{ instance.reader.username }}
+</p>
+{% endif %}
+<p>Darbai bus atlikti: <span class="{% if instance.is_overdue %}text-danger{% endif %}">{{ instance.due_back }}</span></p>
+<p>Būsena: {{ instance.get_status_display }}</p>
+{% endblock %}

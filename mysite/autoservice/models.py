@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 from tinymce.models import HTMLField
 from PIL import Image
+from django.conf import settings
 
 # Custom User modelis su nuotrauka
 class CustomUser(AbstractUser):
@@ -116,7 +117,7 @@ class OrderLine(models.Model):
 
 class OrderReview(models.Model):
     order = models.ForeignKey(to="Order", verbose_name="Order", on_delete=models.SET_NULL, null=True, blank=True, related_name="reviews")
-    reviewer = models.ForeignKey(to="CustomUser", verbose_name="Reviewer", on_delete=models.SET_NULL, null=True, blank=True)
+    reviewer = models.ForeignKey(to=settings.AUTH_USER_MODEL, verbose_name="Reviewer", on_delete=models.SET_NULL, null=True, blank=True)
     date_created = models.DateTimeField(verbose_name="Date Created", auto_now_add=True)
     content = models.TextField(verbose_name="Content", max_length=2000)
 

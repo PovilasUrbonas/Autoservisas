@@ -121,10 +121,3 @@ class ProfileUpdateView(LoginRequiredMixin, generic.UpdateView):
     def get_object(self, queryset=None):
         return self.request.user
 
-class OrderInstanceListView(LoginRequiredMixin, UserPassesTestMixin, generic.ListView):
-    model = OrderInstance
-    context_object_name = "instances"
-    template_name = "order_instances.html"
-
-    def test_func(self):
-        return self.request.user.is_staff

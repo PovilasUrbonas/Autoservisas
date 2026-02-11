@@ -32,7 +32,4 @@ urlpatterns = [
 
     # profilis
     path('profile/', views.ProfileUpdateView.as_view(), name='profile'),
-
-    # rolės
-    path("instances/", views.OrderInstanceListView.as_view(), name="instances"),
 ]

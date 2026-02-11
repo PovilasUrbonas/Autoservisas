@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block heading %}Užsakymai{% endblock %}
 
@@ -7,7 +8,14 @@
 
 <ul class="list-group">
   {% for order in orders %}
-    <li class="list-group-item {% if order.is_overdue %}list-group-item-danger{% endif %}">
+    <li class="list-group-item {% if order.is_overdue %}list-group-item-danger{% endif %} d-flex align-items-center">
+      {% if order.user %}
+        {% if order.user.photo %}
+          <img src="{{ order.user.photo.url }}" class="rounded-circle mr-3" style="width: 40px; height: 40px; object-fit: cover;">
+        {% else %}
+          <img src="{% static 'img/undraw_profile.svg' %}" class="rounded-circle mr-3" style="width: 40px; height: 40px;">
+        {% endif %}
+      {% endif %}
       <a href="{% url 'autoservice:order-detail' order.id %}" class="{% if order.is_overdue %}text-danger{% endif %}">
         Užsakymas #{{ order.id }} — {{ order.car }} — {{ order.date }}
         {% if order.due_back %}

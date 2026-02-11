@@ -4,13 +4,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Service, Order, Car, OrderLine
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
-from .forms import OrderReviewForm
+from .forms import OrderReviewForm, CustomUserChangeForm, CustomUserCreationForm
 from django.views.generic.edit import FormMixin
 from django.views import generic
-from django.contrib.auth.models import User
-from .forms import UserChangeForm
 
 def index(request):
     num_visits = request.session.get("num_visits", 1)
@@ -111,13 +108,13 @@ class MyOrdersListView(LoginRequiredMixin, ListView):
 
 
 class SignUpView(CreateView):
-    form_class = UserCreationForm
+    form_class = CustomUserCreationForm
     template_name = "signup.html"
     success_url = reverse_lazy("login")
 
 
 class ProfileUpdateView(LoginRequiredMixin, generic.UpdateView):
-    form_class = UserChangeForm
+    form_class = CustomUserChangeForm
     template_name = "profile.html"
     success_url = reverse_lazy('autoservice:profile')
 

@@ -138,6 +138,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR / "autoservice/media")
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
+# Custom User modelis
+AUTH_USER_MODEL = 'autoservice.CustomUser'
+
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587

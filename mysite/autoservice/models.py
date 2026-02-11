@@ -1,7 +1,31 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 from tinymce.models import HTMLField
+from PIL import Image
+
+# Custom User modelis su nuotrauka
+class CustomUser(AbstractUser):
+    photo = models.ImageField(upload_to="profile_pics", null=True, blank=True)
+
+    class Meta:
+        verbose_name = "Vartotojas"
+        verbose_name_plural = "Vartotojai"
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.photo:
+            img = Image.open(self.photo.path)
+            # Padarome kvadratinę
+            min_side = min(img.width, img.height)
+            left = (img.width - min_side) // 2
+            top = (img.height - min_side) // 2
+            right = left + min_side
+            bottom = top + min_side
+            img = img.crop((left, top, right, bottom))
+            # Sumažiname iki 300x300
+            img = img.resize((300, 300), Image.LANCZOS)
+            img.save(self.photo.path)
 
 # Create your models here.
 
@@ -40,7 +64,7 @@ class Service(models.Model):
 class Order(models.Model):
     date = models.DateTimeField(verbose_name="Data", auto_now_add=True)
     car = models.ForeignKey(to="Car", on_delete=models.SET_NULL, null=True, blank=True)
-    user = models.ForeignKey(to=User, verbose_name="Vartotojas", on_delete=models.SET_NULL, null=True, blank=True)
+    user = models.ForeignKey(to="CustomUser", verbose_name="Vartotojas", on_delete=models.SET_NULL, null=True, blank=True)
     due_back = models.DateField(verbose_name="Grąžinimo terminas", null=True, blank=True)
 
     ORDER_STATUS = (
@@ -92,7 +116,7 @@ class OrderLine(models.Model):
 
 class OrderReview(models.Model):
     order = models.ForeignKey(to="Order", verbose_name="Order", on_delete=models.SET_NULL, null=True, blank=True, related_name="reviews")
-    reviewer = models.ForeignKey(to=User, verbose_name="Reviewer", on_delete=models.SET_NULL, null=True, blank=True)
+    reviewer = models.ForeignKey(to="CustomUser", verbose_name="Reviewer", on_delete=models.SET_NULL, null=True, blank=True)
     date_created = models.DateTimeField(verbose_name="Date Created", auto_now_add=True)
     content = models.TextField(verbose_name="Content", max_length=2000)
 
@@ -100,3 +124,4 @@ class OrderReview(models.Model):
         verbose_name = "Order Review"
         verbose_name_plural = 'Order Reviews'
         ordering = ['-date_created']
+

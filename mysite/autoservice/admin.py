@@ -1,5 +1,19 @@
 from django.contrib import admin
-from .models import Service, Car, Order, OrderLine, OrderReview
+from django.contrib.auth.admin import UserAdmin
+from .models import Service, Car, Order, OrderLine, OrderReview, CustomUser
+
+
+# CustomUser admin
+@admin.register(CustomUser)
+class CustomUserAdmin(UserAdmin):
+    model = CustomUser
+    list_display = ['username', 'email', 'first_name', 'last_name', 'is_staff', 'photo']
+    fieldsets = UserAdmin.fieldsets + (
+        ('Papildoma informacija', {'fields': ('photo',)}),
+    )
+    add_fieldsets = UserAdmin.add_fieldsets + (
+        ('Papildoma informacija', {'fields': ('photo',)}),
+    )
 
 
 # Register your models here.

@@ -29,4 +29,7 @@ urlpatterns = [
 
     # prisijungimai
     path('signup/', views.SignUpView.as_view(), name='signup'),
+
+    # profilis
+    path('profile/', views.ProfileUpdateView.as_view(), name='profile'),
 ]

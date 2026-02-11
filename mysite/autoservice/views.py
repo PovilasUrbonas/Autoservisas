@@ -8,7 +8,9 @@ from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
 from .forms import OrderReviewForm
 from django.views.generic.edit import FormMixin
-
+from django.views import generic
+from django.contrib.auth.models import User
+from .forms import UserChangeForm
 
 def index(request):
     num_visits = request.session.get("num_visits", 1)
@@ -112,3 +114,12 @@ class SignUpView(CreateView):
     form_class = UserCreationForm
     template_name = "signup.html"
     success_url = reverse_lazy("login")
+
+
+class ProfileUpdateView(LoginRequiredMixin, generic.UpdateView):
+    form_class = UserChangeForm
+    template_name = "profile.html"
+    success_url = reverse_lazy('autoservice:profile')
+
+    def get_object(self, queryset=None):
+        return self.request.user

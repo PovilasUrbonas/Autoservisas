@@ -1,4 +1,4 @@
-from .models import OrderReview, CustomUser, OrderInstance
+from .models import OrderReview, CustomUser, Order, OrderLine
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 
@@ -19,7 +19,17 @@ class CustomUserCreationForm(UserCreationForm):
         model = CustomUser
         fields = ['username', 'email', 'password1', 'password2']
 
-class InstanceCreateUpdateForm(forms.ModelForm):
+class OrderCreateUpdateForm(forms.ModelForm):
+    """Forma užsakymo kūrimui ir redagavimui"""
     class Meta:
-        model = OrderInstance
-        fields = ['car', 'service', 'user', 'due_back', 'status']
+        model = Order
+        fields = ['car', 'due_back', 'status']
+        widgets = {
+            'due_back': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+        }
+
+class OrderLineForm(forms.ModelForm):
+    """Forma užsakymo eilutei"""
+    class Meta:
+        model = OrderLine
+        fields = ['service', 'quantity']

@@ -4,7 +4,7 @@ from .models import Service, Order, Car, OrderLine
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.urls import reverse_lazy
-from .forms import OrderReviewForm, CustomUserChangeForm, CustomUserCreationForm, InstanceCreateUpdateForm
+from .forms import OrderReviewForm, CustomUserChangeForm, CustomUserCreationForm, OrderCreateUpdateForm, OrderLineForm
 from django.views.generic.edit import FormMixin
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -121,20 +121,97 @@ class ProfileUpdateView(LoginRequiredMixin, generic.UpdateView):
     def get_object(self, queryset=None):
         return self.request.user
 
-class OrderInstanceDetailView(LoginRequiredMixin, UserPassesTestMixin, generic.DetailView):
-    model = OrderInstance
-    context_object_name = "instance"
-    template_name = "instance.html"
+
+# -------------------------
+# C) Užsakymų CRUD (Create, Update, Delete)
+# -------------------------
+
+class OrderCreateView(LoginRequiredMixin, generic.CreateView):
+    """Naujo užsakymo kūrimas"""
+    model = Order
+    form_class = OrderCreateUpdateForm
+    template_name = "order_form.html"
+    success_url = reverse_lazy('autoservice:my-orders')
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+
+class OrderUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
+    """Užsakymo redagavimas"""
+    model = Order
+    form_class = OrderCreateUpdateForm
+    template_name = "order_form.html"
+
+    def get_success_url(self):
+        return reverse("autoservice:order-detail", kwargs={"pk": self.object.pk})
 
     def test_func(self):
-        return self.request.user.is_staff
+        # Tik savininkas gali redaguoti savo užsakymą
+        return self.get_object().user == self.request.user
 
-class OrderInstanceCreateView(LoginRequiredMixin, UserPassesTestMixin, generic.CreateView):
-    model = OrderInstance
-    template_name = "instance_form.html"
-    form_class = InstanceCreateUpdateForm
-    # fields = ['car', 'user', 'due_back', 'status', 'order']
-    success_url = reverse_lazy('instances')
+
+class OrderDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView):
+    """Užsakymo trynimas"""
+    model = Order
+    template_name = "order_delete.html"
+    context_object_name = "order"
+    success_url = reverse_lazy('autoservice:my-orders')
 
     def test_func(self):
-        return self.request.user.is_staff
+        # Tik savininkas gali ištrinti savo užsakymą
+        return self.get_object().user == self.request.user
+
+
+# -------------------------
+# D) Užsakymo eilučių CRUD
+# -------------------------
+
+class OrderLineCreateView(LoginRequiredMixin, UserPassesTestMixin, generic.CreateView):
+    """Naujos eilutės pridėjimas prie užsakymo"""
+    model = OrderLine
+    form_class = OrderLineForm
+    template_name = "orderline_form.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['order'] = get_object_or_404(Order, pk=self.kwargs['order_pk'])
+        return context
+
+    def form_valid(self, form):
+        form.instance.order = get_object_or_404(Order, pk=self.kwargs['order_pk'])
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse("autoservice:order-detail", kwargs={"pk": self.kwargs['order_pk']})
+
+    def test_func(self):
+        order = get_object_or_404(Order, pk=self.kwargs['order_pk'])
+        return order.user == self.request.user
+
+
+class OrderLineUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
+    """Užsakymo eilutės redagavimas"""
+    model = OrderLine
+    form_class = OrderLineForm
+    template_name = "orderline_form.html"
+
+    def get_success_url(self):
+        return reverse("autoservice:order-detail", kwargs={"pk": self.object.order.pk})
+
+    def test_func(self):
+        return self.get_object().order.user == self.request.user
+
+
+class OrderLineDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView):
+    """Užsakymo eilutės trynimas"""
+    model = OrderLine
+    template_name = "orderline_delete.html"
+    context_object_name = "line"
+
+    def get_success_url(self):
+        return reverse("autoservice:order-detail", kwargs={"pk": self.object.order.pk})
+
+    def test_func(self):
+        return self.get_object().order.user == self.request.user

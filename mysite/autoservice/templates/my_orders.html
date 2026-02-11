@@ -3,7 +3,12 @@
 {% block heading %}Mano Užsakymai{% endblock %}
 
 {% block content %}
-<h2>Mano Užsakymai</h2>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Mano Užsakymai</h2>
+    <a href="{% url 'autoservice:order-create' %}" class="btn btn-success">
+        <i class="fas fa-plus"></i> Naujas užsakymas
+    </a>
+</div>
 
 {% if user.is_authenticated %}
 <ul class="list-group">

@@ -1,6 +1,6 @@
 from django.shortcuts import render, reverse, get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import Service, Order, Car, OrderLine
 from django.core.paginator import Paginator
 from django.db.models import Q
@@ -120,3 +120,11 @@ class ProfileUpdateView(LoginRequiredMixin, generic.UpdateView):
 
     def get_object(self, queryset=None):
         return self.request.user
+
+class OrderInstanceListView(LoginRequiredMixin, UserPassesTestMixin, generic.ListView):
+    model = OrderInstance
+    context_object_name = "instances"
+    template_name = "order_instances.html"
+
+    def test_func(self):
+        return self.request.user.is_staff

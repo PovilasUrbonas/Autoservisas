@@ -1,14 +1,15 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
-{% block heading %}Automobiliai{% endblock %}
+{% block heading %}{% trans "Cars" %}{% endblock %}
 {% block content %}
 
 <form method="get" class="mb-3">
   <div class="input-group">
-    <input type="text" name="q" class="form-control" placeholder="Ieškoti..." value="{{ query|default:'' }}">
+    <input type="text" name="q" class="form-control" placeholder="{% trans "Search..." %}" value="{{ query|default:'' }}">
     <div class="input-group-append">
-      <button class="btn btn-primary" type="submit">Ieškoti</button>
+      <button class="btn btn-primary" type="submit">{% trans "Search" %}</button>
     </div>
   </div>
 </form>
@@ -32,14 +33,14 @@
 
         <div class="card-footer bg-white border-0">
           <a href="{% url 'autoservice:car-detail' car.id %}" class="btn btn-sm btn-outline-primary">
-            Peržiūrėti
+            {% trans "View" %}
           </a>
         </div>
       </div>
     </div>
   {% empty %}
     <div class="col-12">
-      <div class="alert alert-info">Nėra registruotų automobilių</div>
+      <div class="alert alert-info">{% trans "No registered cars" %}</div>
     </div>
   {% endfor %}
 </div>

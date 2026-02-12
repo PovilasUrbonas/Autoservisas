@@ -1,12 +1,13 @@
 {% extends "base.html" %}
+{% load i18n %}
 
-{% block heading %}Mano Užsakymai{% endblock %}
+{% block heading %}{% trans "My Orders" %}{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>Mano Užsakymai</h2>
+    <h2>{% trans "My Orders" %}</h2>
     <a href="{% url 'autoservice:order-create' %}" class="btn btn-success">
-        <i class="fas fa-plus"></i> Naujas užsakymas
+        <i class="fas fa-plus"></i> {% trans "New Order" %}
     </a>
 </div>
 
@@ -15,18 +16,18 @@
   {% for order in orders %}
     <li class="list-group-item {% if order.is_overdue %}list-group-item-danger{% endif %}">
       <a href="{% url 'autoservice:order-detail' order.id %}" class="{% if order.is_overdue %}text-danger{% endif %}">
-        Užsakymas #{{ order.id }} — {{ order.car }} — {{ order.date }}
+        {% trans "Order" %} #{{ order.id }} — {{ order.car }} — {{ order.date }}
         {% if order.due_back %}
-          — Terminas: {{ order.due_back }}
+          — {% trans "Due:" %} {{ order.due_back }}
         {% endif %}
         — {{ order.total|floatformat:2 }} €
         {% if order.is_overdue %}
-          <span class="badge badge-danger">Praėjęs terminas!</span>
+          <span class="badge badge-danger">{% trans "Overdue!" %}</span>
         {% endif %}
       </a>
     </li>
   {% empty %}
-    <li class="list-group-item">Neturite užsakymų</li>
+    <li class="list-group-item">{% trans "You have no orders" %}</li>
   {% endfor %}
 </ul>
 
@@ -61,6 +62,6 @@
 {% endif %}
 
 {% else %}
-  <p>Prašome <a href="{% url 'login' %}">prisijungti</a>, kad matytumėte savo užsakymus.</p>
+  <p>{% trans "Please" %} <a href="{% url 'login' %}">{% trans "log in" %}</a> {% trans "to see your orders." %}</p>
 {% endif %}
 {% endblock %}

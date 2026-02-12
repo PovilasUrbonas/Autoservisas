@@ -1,8 +1,9 @@
 {% extends "base.html" %}
+{% load i18n %}
 
-{% block title %}Atsijungimas{% endblock %}
+{% block title %}{% trans "Logged Out" %}{% endblock %}
 
 {% block content %}
-  <p>Sėkmingai atsijungėte!</p>  
-  <a href="{% url 'login'%}">Prisijungti iš naujo.</a>
+  <p>{% trans "You have been successfully logged out!" %}</p>
+  <a href="{% url 'login'%}">{% trans "Log in again." %}</a>
 {% endblock %}

@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
-{% block title %}Profilis{% endblock %}
-{% block heading %}Mano profilis{% endblock %}
+{% block title %}{% trans "Profile" %}{% endblock %}
+{% block heading %}{% trans "My Profile" %}{% endblock %}
 
 {% block content %}
 <div class="row">
@@ -16,12 +17,12 @@
         <p class="text-muted">{{ user.email }}</p>
     </div>
     <div class="col-md-8">
-        <h5 class="mb-3">Redaguoti profilį</h5>
+        <h5 class="mb-3">{% trans "Edit Profile" %}</h5>
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {% load crispy_forms_tags %}
             {{ form | crispy }}
-            <button type="submit" class="btn btn-primary">Išsaugoti pakeitimus</button>
+            <button type="submit" class="btn btn-primary">{% trans "Save Changes" %}</button>
         </form>
     </div>
 </div>

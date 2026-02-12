@@ -1,10 +1,11 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
-{% block heading %}Užsakymai{% endblock %}
+{% block heading %}{% trans "Orders" %}{% endblock %}
 
 {% block content %}
-<h2>Užsakymai</h2>
+<h2>{% trans "Orders" %}</h2>
 
 <ul class="list-group">
   {% for order in orders %}
@@ -17,18 +18,18 @@
         {% endif %}
       {% endif %}
       <a href="{% url 'autoservice:order-detail' order.id %}" class="{% if order.is_overdue %}text-danger{% endif %}">
-        Užsakymas #{{ order.id }} — {{ order.car }} — {{ order.date }}
+        {% trans "Order" %} #{{ order.id }} — {{ order.car }} — {{ order.date }}
         {% if order.due_back %}
-          — Terminas: {{ order.due_back }}
+          — {% trans "Due:" %} {{ order.due_back }}
         {% endif %}
         — {{ order.total|floatformat:2 }} €
         {% if order.is_overdue %}
-          <span class="badge badge-danger">Praėjęs terminas!</span>
+          <span class="badge badge-danger">{% trans "Overdue!" %}</span>
         {% endif %}
       </a>
     </li>
   {% empty %}
-    <li class="list-group-item">Nėra užsakymų</li>
+    <li class="list-group-item">{% trans "No orders" %}</li>
   {% endfor %}
 </ul>
 

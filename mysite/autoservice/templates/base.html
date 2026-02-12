@@ -38,7 +38,7 @@
             <div class="sidebar-brand-icon rotate-n-15">
                 <i class="fas fa-laugh-wink"></i>
             </div>
-            <div class="sidebar-brand-text mx-3">{% trans "Autoservisas" %}</div>
+            <div class="sidebar-brand-text mx-3">{% trans "Autoservice" %}</div>
         </a>
 
         <!-- Divider -->
@@ -48,21 +48,21 @@
         <li class="nav-item active">
             <a class="nav-link" href="{% url 'autoservice:index' %}">
                 <i class="fas fa-fw fa-tachometer-alt"></i>
-                <span>{% trans "Pradžia" %}</span>
+                <span>{% trans "Home" %}</span>
             </a>
         </li>
 
         <li class="nav-item">
             <a class="nav-link" href="{% url 'autoservice:car-list' %}">
                 <i class="fas fa-fw fa-car"></i>
-                <span>{% trans "Automobiliai" %}</span>
+                <span>{% trans "Cars" %}</span>
             </a>
         </li>
 
         <li class="nav-item">
             <a class="nav-link" href="{% url 'autoservice:order-list' %}">
                 <i class="fas fa-fw fa-clipboard-list"></i>
-                <span>{% trans "Užsakymai" %}</span>
+                <span>{% trans "Orders" %}</span>
             </a>
         </li>
 
@@ -70,7 +70,7 @@
         <li class="nav-item">
             <a class="nav-link" href="{% url 'autoservice:my-orders' %}">
                 <i class="fas fa-fw fa-user-check"></i>
-                <span>{% trans "Mano užsakymai" %}</span>
+                <span>{% trans "My Orders" %}</span>
             </a>
         </li>
         <li class="nav-item">
@@ -115,7 +115,7 @@
                         <input type="text"
                                name="q"
                                class="form-control bg-light border-0 small"
-                               placeholder="{% trans "Ieškoti automobilių..." %}"
+                               placeholder="{% trans "Search cars..." %}"
                                value="{{ request.GET.q|default:'' }}"
                                aria-label="Search" aria-describedby="basic-addon2">
 
@@ -142,7 +142,7 @@
                             <form method="get" action="{% url 'autoservice:car-list' %}" class="form-inline mr-auto w-100 navbar-search">
                                 <div class="input-group">
                                     <input type="text" name="q" class="form-control bg-light border-0 small"
-                                    placeholder="{% trans "Ieškoti automobilių..." %}" value="{{ request.GET.q|default:'' }}"
+                                    placeholder="{% trans "Search cars..." %}" value="{{ request.GET.q|default:'' }}"
                                     aria-label="Search" aria-describedby="basic-addon2">
                                 <div class="input-group-append">
                                     <button class="btn btn-primary" type="submit">
@@ -169,35 +169,35 @@
                              aria-labelledby="userDropdown">
                             <a class="dropdown-item" href="{% url 'autoservice:my-orders' %}">
                                 <i class="fas fa-clipboard-list fa-sm fa-fw mr-2 text-gray-400"></i>
-                                {% trans "Mano užsakymai" %}
+                                {% trans "My Orders" %}
                             </a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
                                 <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                                {% trans "Atsijungti" %}
+                                {% trans "Log Out" %}
                             </a>
                         </div>
                         {% else %}
                         <a class="nav-link" href="{% url 'login' %}">
-                            <span class="mr-2 d-none d-lg-inline text-gray-600 small">{% trans "Prisijungti" %}</span>
+                            <span class="mr-2 d-none d-lg-inline text-gray-600 small">{% trans "Login" %}</span>
                             <i class="fas fa-sign-in-alt"></i>
                         </a>
                         {% endif %}
                     </li>
                     {% if not user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'autoservice:signup' %}">{% trans "Registracija" %}</a>
+                        <a class="nav-link" href="{% url 'autoservice:signup' %}">{% trans "Sign Up" %}</a>
                     </li>
                     {% endif %}
                     {% if user.is_staff %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'admin:index' %}">{% trans "Administravimas" %}</a>
+                        <a class="nav-link" href="{% url 'admin:index' %}">{% trans "Administration" %}</a>
                     </li>
                     {% endif %}
                     <li class="nav-item">
                         <form action="{% url 'set_language' %}" method="post" class="d-flex">
                             {% csrf_token %}
-                            <input name="next" type="hidden" value="{{ redirect_to }}"/>
+                            <input name="next" type="hidden" value="{{ request.path }}"/>
                             <select name="language" class="form-control me-2" onchange="this.form.submit()">
                                 {% get_current_language as LANGUAGE_CODE %}
                                 {% get_available_languages as LANGUAGES %}
@@ -273,7 +273,7 @@
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
-            <div class="modal-body">{% trans "Select \"Logout\" below if you are ready to end your current session." %}</div>
+            <div class="modal-body">{% trans "Select 'Logout' below if you are ready to end your current session." %}</div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">{% trans "Cancel" %}</button>
                 <a class="btn btn-primary" href="{% url 'admin:logout' %}">{% trans "Logout" %}</a>

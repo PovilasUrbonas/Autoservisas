@@ -6,30 +6,27 @@ from PIL import Image
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 
-# Custom User modelis su nuotrauka
+
 class CustomUser(AbstractUser):
-    photo = models.ImageField(upload_to="profile_pics", null=True, blank=True)
+    photo = models.ImageField(verbose_name=_("Photo"), upload_to="profile_pics", null=True, blank=True)
 
     class Meta:
-        verbose_name = "Vartotojas"
-        verbose_name_plural = "Vartotojai"
+        verbose_name = _("User")
+        verbose_name_plural = _("Users")
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         if self.photo:
             img = Image.open(self.photo.path)
-            # Padarome kvadratinę
             min_side = min(img.width, img.height)
             left = (img.width - min_side) // 2
             top = (img.height - min_side) // 2
             right = left + min_side
             bottom = top + min_side
             img = img.crop((left, top, right, bottom))
-            # Sumažiname iki 300x300
             img = img.resize((300, 300), Image.LANCZOS)
             img.save(self.photo.path)
 
-# Create your models here.
 
 class Car(models.Model):
     make = models.CharField(verbose_name=_("Make"), max_length=100)
@@ -37,7 +34,7 @@ class Car(models.Model):
     license_plate = models.CharField(verbose_name=_("License Plate"), max_length=10)
     vin_code = models.CharField(verbose_name=_("VIN Code"), max_length=20)
     client_name = models.CharField(verbose_name=_("Client Name"), max_length=500)
-    photo = models.ImageField(verbose_name=_('Photo'), upload_to='car', null=True, blank=True)
+    photo = models.ImageField(verbose_name=_("Photo"), upload_to='car', null=True, blank=True)
     description = HTMLField(verbose_name=_("Description"), max_length=3000, default="")
 
     def __str__(self):
@@ -52,32 +49,34 @@ class Car(models.Model):
         verbose_name = _("Car")
         verbose_name_plural = _("Cars")
 
+
 class Service(models.Model):
-    name = models.CharField(verbose_name="Service", max_length=100)
-    price = models.FloatField(verbose_name="Price")
+    name = models.CharField(verbose_name=_("Service"), max_length=100)
+    price = models.FloatField(verbose_name=_("Price"))
 
     def __str__(self):
         return self.name
 
     class Meta:
-        verbose_name = "Service"
-        verbose_name_plural = "Services"
+        verbose_name = _("Service")
+        verbose_name_plural = _("Services")
+
 
 class Order(models.Model):
-    date = models.DateTimeField(verbose_name="Data", auto_now_add=True)
-    car = models.ForeignKey(to="Car", on_delete=models.SET_NULL, null=True, blank=True)
-    user = models.ForeignKey(to="CustomUser", verbose_name="Vartotojas", on_delete=models.SET_NULL, null=True, blank=True)
-    due_back = models.DateField(verbose_name="Grąžinimo terminas", null=True, blank=True)
+    date = models.DateTimeField(verbose_name=_("Date"), auto_now_add=True)
+    car = models.ForeignKey(to="Car", verbose_name=_("Car"), on_delete=models.SET_NULL, null=True, blank=True)
+    user = models.ForeignKey(to="CustomUser", verbose_name=_("User"), on_delete=models.SET_NULL, null=True, blank=True)
+    due_back = models.DateField(verbose_name=_("Due Back"), null=True, blank=True)
 
     ORDER_STATUS = (
-        ('p', 'Pending'),
-        ('i', 'In Progress'),
-        ('c', 'Completed'),
-        ('x', 'Cancelled'),
+        ('p', _('Pending')),
+        ('i', _('In Progress')),
+        ('c', _('Completed')),
+        ('x', _('Cancelled')),
     )
 
     status = models.CharField(
-        verbose_name="Status",
+        verbose_name=_("Status"),
         max_length=1,
         choices=ORDER_STATUS,
         default='p')
@@ -91,67 +90,39 @@ class Order(models.Model):
 
     @property
     def is_overdue(self):
-        """Grąžina True, jei grąžinimo terminas praėjo"""
         if self.due_back and timezone.now().date() > self.due_back:
             return True
         return False
 
     class Meta:
-        verbose_name = "Order"
-        verbose_name_plural = "Orders"
+        verbose_name = _("Order")
+        verbose_name_plural = _("Orders")
+
 
 class OrderLine(models.Model):
-    order = models.ForeignKey(to="Order", on_delete=models.CASCADE, related_name="lines", verbose_name="lines")
-    service = models.ForeignKey(to="Service", on_delete=models.SET_NULL, null=True, blank=True)
-    quantity = models.IntegerField(verbose_name="Quantity", default=1)
+    order = models.ForeignKey(to="Order", on_delete=models.CASCADE, related_name="lines", verbose_name=_("Order"))
+    service = models.ForeignKey(to="Service", on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_("Service"))
+    quantity = models.IntegerField(verbose_name=_("Quantity"), default=1)
 
     def line_sum(self):
         if self.service is None:
             return 0
         return self.quantity * self.service.price
 
-    line_sum.short_description = "Line sum"
+    line_sum.short_description = _("Line Sum")
 
     class Meta:
-        verbose_name = 'Order Line'
-        verbose_name_plural = 'Order Lines'
+        verbose_name = _("Order Line")
+        verbose_name_plural = _("Order Lines")
+
 
 class OrderReview(models.Model):
-    order = models.ForeignKey(to="Order", verbose_name="Order", on_delete=models.SET_NULL, null=True, blank=True, related_name="reviews")
-    reviewer = models.ForeignKey(to=settings.AUTH_USER_MODEL, verbose_name="Reviewer", on_delete=models.SET_NULL, null=True, blank=True)
-    date_created = models.DateTimeField(verbose_name="Date Created", auto_now_add=True)
-    content = models.TextField(verbose_name="Content", max_length=2000)
+    order = models.ForeignKey(to="Order", verbose_name=_("Order"), on_delete=models.SET_NULL, null=True, blank=True, related_name="reviews")
+    reviewer = models.ForeignKey(to=settings.AUTH_USER_MODEL, verbose_name=_("Reviewer"), on_delete=models.SET_NULL, null=True, blank=True)
+    date_created = models.DateTimeField(verbose_name=_("Date Created"), auto_now_add=True)
+    content = models.TextField(verbose_name=_("Content"), max_length=2000)
 
     class Meta:
-        verbose_name = "Order Review"
-        verbose_name_plural = 'Order Reviews'
+        verbose_name = _("Order Review")
+        verbose_name_plural = _("Order Reviews")
         ordering = ['-date_created']
-
-@csrf_protect
-def register(request):
-    if request.method == "POST":
-        # pasiimame reikšmes iš registracijos formos
-        username = request.POST['username']
-        email = request.POST['email']
-        password = request.POST['password']
-        password2 = request.POST['password2']
-        # tikriname, ar sutampa slaptažodžiai
-        if password == password2:
-            # tikriname, ar neužimtas username
-            if User.objects.filter(username=username).exists():
-                messages.error(request, _('Username %s already exists!') % username)
-                return redirect('register')
-            else:
-                # tikriname, ar nėra tokio pat email
-                if User.objects.filter(email=email).exists():
-                    messages.error(request, _('Email %s already exists!') % email)
-                    return redirect('register')
-                else:
-                    # jeigu viskas tvarkoje, sukuriame naują vartotoją
-                    User.objects.create_user(username=username, email=email, password=password)
-        else:
-            messages.error(request, _('Passwords do not match!'))
-            return redirect('register')
-    return render(request, 'register.html')
-
-

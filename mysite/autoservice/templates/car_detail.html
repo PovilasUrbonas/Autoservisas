@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block heading %}{{ car.make }} {{ car.model }}{% endblock %}
 
@@ -18,14 +19,14 @@
 {% endif %}
 
 <ul>
-  <li><b>Savininkas:</b> {{ car.client_name }}</li>
-  <li><b>Valstybinis nr.:</b> {{ car.license_plate }}</li>
-  <li><b>VIN kodas:</b> {{ car.vin_code }}</li>
+  <li><b>{% trans "Owner:" %}</b> {{ car.client_name }}</li>
+  <li><b>{% trans "License Plate:" %}</b> {{ car.license_plate }}</li>
+  <li><b>{% trans "VIN Code:" %}</b> {{ car.vin_code }}</li>
 </ul>
 
 {% if car.description %}
 <div class="mt-4">
-  <h5>Aprašymas:</h5>
+  <h5>{% trans "Description:" %}</h5>
   <div class="card">
     <div class="card-body">
       {{ car.description | safe }}
@@ -34,6 +35,6 @@
 </div>
 {% endif %}
 
-<a href="{% url 'autoservice:car-list' %}" class="mt-3 d-inline-block">← Atgal į automobilius</a>
+<a href="{% url 'autoservice:car-list' %}" class="mt-3 d-inline-block">← {% trans "Back to cars" %}</a>
 
 {% endblock %}

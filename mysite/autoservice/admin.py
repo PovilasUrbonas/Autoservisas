@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
+from django.utils.translation import gettext_lazy as _
 from .models import Service, Car, Order, OrderLine, OrderReview, CustomUser
 
 
@@ -9,10 +10,10 @@ class CustomUserAdmin(UserAdmin):
     model = CustomUser
     list_display = ['username', 'email', 'first_name', 'last_name', 'is_staff', 'photo']
     fieldsets = UserAdmin.fieldsets + (
-        ('Papildoma informacija', {'fields': ('photo',)}),
+        (_('Additional Information'), {'fields': ('photo',)}),
     )
     add_fieldsets = UserAdmin.add_fieldsets + (
-        ('Papildoma informacija', {'fields': ('photo',)}),
+        (_('Additional Information'), {'fields': ('photo',)}),
     )
 
 
@@ -25,7 +26,7 @@ class OrderLineInLine(admin.TabularInline):
     fields = ['service', 'quantity', 'line_sum']
     readonly_fields = ['line_sum']
 
-    @admin.display(description="Line sum")
+    @admin.display(description=_("Line Sum"))
     def line_sum(self, obj):
         if not obj.service or obj.quantity is None:
             return 0
@@ -38,7 +39,7 @@ class OrderAdmin(admin.ModelAdmin):
     readonly_fields = ['date', 'total']
 
     fieldsets = [
-        ("General", {'fields': ['car', 'date', 'user', 'due_back', 'status', 'total']}),
+        (_("General"), {'fields': ['car', 'date', 'user', 'due_back', 'status', 'total']}),
     ]
 
 
@@ -54,11 +55,11 @@ class ServiceAdmin(admin.ModelAdmin):
 class OrderLineAdmin(admin.ModelAdmin):
     list_display = ['order', 'service', 'quantity', 'line_sum']
     fieldsets = [
-        ("General", {'fields': ['order', 'service', 'quantity', 'line_sum']}),
+        (_("General"), {'fields': ['order', 'service', 'quantity', 'line_sum']}),
     ]
     readonly_fields = ['line_sum']
 
-    @admin.display(description="Line sum")
+    @admin.display(description=_("Line Sum"))
     def line_sum(self, obj):
         if not obj.service or obj.quantity is None:
             return 0

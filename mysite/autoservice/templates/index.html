@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 {% load i18n %}
-{% block title %}Statistika{% endblock %}
+{% block title %}{% trans "Statistics" %}{% endblock %}
 
-{% block heading %}Statistika{% endblock %}
+{% block heading %}{% trans "Statistics" %}{% endblock %}
 
 {% block content %}
-<h1>Autoserviso statistika:</h1>
-<p>Paslaugų: <b>{{ services_count }}</b></p>
-<p>Registruotų automobilių: <b>{{ cars_count }}</b></p>
-<p>Atliktų užsakymų: <b>{{ done_orders_count }}</b></p>
-<p>Čia jūs lankotės {{ num_visits }}-ą kartą.</p>
+<h1>{% trans "Autoservice Statistics:" %}</h1>
+<p>{% trans "Services:" %} <b>{{ services_count }}</b></p>
+<p>{% trans "Registered Cars:" %} <b>{{ cars_count }}</b></p>
+<p>{% trans "Completed Orders:" %} <b>{{ done_orders_count }}</b></p>
+<p>{% blocktrans count counter=num_visits %}You have visited this page {{ counter }} time.{% plural %}You have visited this page {{ counter }} times.{% endblocktrans %}</p>
 {% endblock %}

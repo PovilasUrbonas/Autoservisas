@@ -8,6 +8,7 @@ urlpatterns = [
     path("", include("autoservice.urls")),
     path('accounts/', include('django.contrib.auth.urls')),
     path('tinymce/', include('tinymce.urls')),
+    path('i18n/', include('django.conf.urls.i18n')),
 ]
 
 # Serve upload media files in development

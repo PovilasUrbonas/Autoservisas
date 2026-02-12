@@ -4,6 +4,7 @@ from django.utils import timezone
 from tinymce.models import HTMLField
 from PIL import Image
 from django.conf import settings
+from django.utils.translation import gettext_lazy as _
 
 # Custom User modelis su nuotrauka
 class CustomUser(AbstractUser):
@@ -31,13 +32,13 @@ class CustomUser(AbstractUser):
 # Create your models here.
 
 class Car(models.Model):
-    make = models.CharField(verbose_name="Make", max_length=100)
-    model = models.CharField(verbose_name="Model", max_length=100)
-    license_plate = models.CharField(verbose_name="License Plate", max_length=10)
-    vin_code = models.CharField(verbose_name="VIN Code", max_length=20)
-    client_name = models.CharField(verbose_name="Client Name", max_length=500)
-    photo = models.ImageField('Photo', upload_to='car', null=True, blank=True)
-    description = HTMLField(verbose_name="Description", max_length=3000, default="")
+    make = models.CharField(verbose_name=_("Make"), max_length=100)
+    model = models.CharField(verbose_name=_("Model"), max_length=100)
+    license_plate = models.CharField(verbose_name=_("License Plate"), max_length=10)
+    vin_code = models.CharField(verbose_name=_("VIN Code"), max_length=20)
+    client_name = models.CharField(verbose_name=_("Client Name"), max_length=500)
+    photo = models.ImageField(verbose_name=_('Photo'), upload_to='car', null=True, blank=True)
+    description = HTMLField(verbose_name=_("Description"), max_length=3000, default="")
 
     def __str__(self):
         return f"{self.make} {self.model} ({self.license_plate})"
@@ -45,11 +46,11 @@ class Car(models.Model):
     def display_vin_code(self):
         return self.vin_code
 
-    display_vin_code.short_description = "VIN Code"
+    display_vin_code.short_description = _("VIN Code")
 
     class Meta:
-        verbose_name = "Car"
-        verbose_name_plural = "Cars"
+        verbose_name = _("Car")
+        verbose_name_plural = _("Cars")
 
 class Service(models.Model):
     name = models.CharField(verbose_name="Service", max_length=100)
@@ -125,5 +126,32 @@ class OrderReview(models.Model):
         verbose_name = "Order Review"
         verbose_name_plural = 'Order Reviews'
         ordering = ['-date_created']
+
+@csrf_protect
+def register(request):
+    if request.method == "POST":
+        # pasiimame reikšmes iš registracijos formos
+        username = request.POST['username']
+        email = request.POST['email']
+        password = request.POST['password']
+        password2 = request.POST['password2']
+        # tikriname, ar sutampa slaptažodžiai
+        if password == password2:
+            # tikriname, ar neužimtas username
+            if User.objects.filter(username=username).exists():
+                messages.error(request, _('Username %s already exists!') % username)
+                return redirect('register')
+            else:
+                # tikriname, ar nėra tokio pat email
+                if User.objects.filter(email=email).exists():
+                    messages.error(request, _('Email %s already exists!') % email)
+                    return redirect('register')
+                else:
+                    # jeigu viskas tvarkoje, sukuriame naują vartotoją
+                    User.objects.create_user(username=username, email=email, password=password)
+        else:
+            messages.error(request, _('Passwords do not match!'))
+            return redirect('register')
+    return render(request, 'register.html')
 
 
